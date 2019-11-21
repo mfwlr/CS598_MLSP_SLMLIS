@@ -23,21 +23,16 @@ def process_data_sets(k, x_red=1.0/12, y_red=1.0/12):
             height *=  y_red
             img.thumbnail((width,height))
             image = np.array(img, np.int32)
-
             x,y,z = image.shape
-
             reshaped  =  image.reshape(x*y,z)
-            print(reshaped.shape)
             kmeans_cluster = cluster.KMeans(n_clusters = k)
-
 
             kmeans_cluster.fit(reshaped)
             cluster_centers  = kmeans_cluster.cluster_centers_
             cluster_labels =  kmeans_cluster.labels_
             print("Done with ", im)
-            c = cluster_centers[cluster_labels]/255
-            print(c)
-            plt.imshow(c.reshape(x, y, z), cmap='viridis')
+
+            plt.imshow(cluster_centers[cluster_labels].reshape(x, y, z))
             plt.show()
 
 process_data_sets(6)
