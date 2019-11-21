@@ -39,7 +39,7 @@ def read_images(count=10):
 
             img = Image.open(im)
             #Get rid of this eventually in favor of cutting imgs into chunks
-            img.thumbnail((50, 50))
+            img.thumbnail((75, 75))
             #Scale as float
             image = np.array(img, np.float)/255
 
@@ -58,7 +58,7 @@ def read_images(count=10):
 
 
 
-def test_PCA(vectors,using_shape, featureCounts):
+def eval_PCA(vectors,using_shape, featureCounts):
     ones = np.ones((vectors.shape[1],1),dtype = vectors.dtype)
     ones = ones/vectors.shape[1]
 
@@ -72,12 +72,16 @@ def test_PCA(vectors,using_shape, featureCounts):
 
         for col in range(vectors.shape[1]):
             fossil =  reconstructed_vector[:,col]
+            real_fossil = vectors[:,col]
             print(fossil)
             fossil = np.reshape(fossil, using_shape, 'F')
-            plt.imshow(fossil)
+            real_fossil = np.reshape(real_fossil, using_shape, 'F')
+            feature_figure, axes = plt.subplots(1, 2, sharey=True)
+            axes[0].imshow(real_fossil)
+            axes[1].imshow(fossil[:,:,1])
             plt.show()
 
 
-v, us =  read_images(5)
-test_PCA(v,us,[36])
+v, us =  read_images(50)
+eval_PCA(v,us,[5])
 
