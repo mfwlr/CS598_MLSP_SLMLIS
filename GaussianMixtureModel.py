@@ -4,7 +4,7 @@ from pathlib import Path
 import scipy.stats
 import matplotlib.pyplot as plt
 
-#Gaussian Mixture Model with tied covariance matrices 
+#Gaussian Mixture Model with tied covariance matrices
 for filename in Path('Fossil Data Sets').rglob('*.jpg'):
     img = Image.open(filename)
     pix = np.array(img)
