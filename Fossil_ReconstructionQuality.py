@@ -124,7 +124,7 @@ def read_images(count=10):
 
             img = Image.open(im)
             #Get rid of this eventually in favor of cutting imgs into chunks
-            img.thumbnail((100,100))
+            img.thumbnail((120,120))
             #Scale as float
             image = np.array(img, np.float)/255
 
@@ -185,10 +185,10 @@ def eval_chart(vectors,using_shape, featureCounts):
         #ax3 = project_figure.add_subplot(p_gs[2,curCol])
         #ax4 = project_figure.add_subplot(p_gs[3,curCol])
 
-        axes[0,curCol].imshow(real_fossil)
-        axes[1,curCol].imshow(fossil_pca[:, :, 1])
-        axes[2,curCol].imshow(fossil_ica[:, :, 1])
-        axes[3,curCol].imshow(fossil_nmf[:, :, 1])
+        axes[0,curCol].imshow(real_fossil,cmap="summer")
+        axes[1,curCol].imshow(fossil_pca[:, :, 1],cmap="summer")
+        axes[2,curCol].imshow(fossil_ica[:, :, 1],cmap="summer")
+        axes[3,curCol].imshow(fossil_nmf[:, :, 1],cmap="summer")
 
         curCol +=1
 
@@ -196,13 +196,16 @@ def eval_chart(vectors,using_shape, featureCounts):
         ax.set_title(col)
 
     for ax, row in zip(axes[:, 0], ['Real Fossil', 'PCA', 'ICA', 'NMF']):
-        ax.set_ylabel(row, rotation=0, size="medium")
+        ax.set_ylabel(row, rotation=25, size="medium")
     project_figure.tight_layout()
+
+    plt.xticks([])
+    plt.yticks([])
     plt.show()
 
 
 v, us =  read_images(50)
-eval_chart(v,us,[2,5])
+eval_chart(v,us,[2,5,10,15,20,25])
 #eval_PCA(v,us,[2,5,10,15,20,25,30,35,40])
 #eval_NMF(v,us,[2,5,10,15,20,25,30,35,40])
 #eval_ICA(v,us,[2,5,10,15,20,25,30,35,40])
