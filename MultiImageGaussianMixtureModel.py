@@ -88,5 +88,5 @@ for num_clusters in range(5, 6):
         for cluster in range(num_clusters):
             plt.imshow(posterior_probs[cluster][start : end].reshape(rows[image], cols[image]))
             #plt.show()
-            plt.savefig('Output/' + filenames[image].replace('.jpg', f"_{cluster}.jpg"), bbox_inches='tight')
+            plt.savefig('Output/' + filenames[image].replace('.jpg', f"_{cluster}.jpg"), dpi=200)
         start += rows[image] * cols[image]
