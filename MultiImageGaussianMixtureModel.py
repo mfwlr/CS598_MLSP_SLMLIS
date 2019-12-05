@@ -9,8 +9,8 @@ rows = []
 cols = []
 filenames = []
 data_list = []
-limit = 3
-for filename in Path('Fossil Data Sets').rglob('*.jpg'):
+limit = 100
+for filename in Path('Fossil Data Sets/MTN-1 squares-JPG').rglob('*.jpg'):
     img = Image.open(filename)
     pix = np.array(img)
     filenames.append(str(filename))
@@ -38,7 +38,7 @@ for num_clusters in range(5, 6):
 
     posterior_probs = []
     old_posterior_probs = []
-    for iteration in range(5):
+    for iteration in range(20):
         print("Starting iteration: ", iteration)
         # E-step, estimate probability of each pixel being in each class given
         # the current mean/covariance for that class
@@ -52,7 +52,8 @@ for num_clusters in range(5, 6):
             old_posterior_probs = posterior_probs
         posterior_probs = []
         for cluster in range(num_clusters):
-            posterior_probs.append(tmp_probs[cluster] / all_normals)
+            posterior_probs.append(np.nan_to_num(tmp_probs[cluster] / all_normals))
+
 
         if old_posterior_probs:
             delta = np.sum(np.abs(np.array(old_posterior_probs) - np.array(posterior_probs)))
@@ -79,8 +80,8 @@ for num_clusters in range(5, 6):
         for cluster in range(num_clusters):
             tmp = np.multiply(posterior_probs[cluster][:,None], data - means[cluster])
             cov_list[cluster] = tmp.T @ tmp / tmp.shape[0]
-            #make it a tied covariance:
-            covariance = np.sum(np.array(cov_list), axis=0)
+        #make it a tied covariance:
+        covariance = np.sum(np.array(cov_list), axis=0)
 
     start = 0
     for image in range(len(filenames)):
