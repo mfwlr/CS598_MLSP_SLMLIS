@@ -186,9 +186,20 @@ def eval_chart(vectors,using_shape, featureCounts):
         #ax4 = project_figure.add_subplot(p_gs[3,curCol])
 
         axes[0,curCol].imshow(real_fossil,cmap="summer")
+        axes[0,curCol].set_xticks([],[])
+        axes[0, curCol].set_yticks([], [])
+
         axes[1,curCol].imshow(fossil_pca[:, :, 1],cmap="summer")
+        axes[1, curCol].set_xticks([], [])
+        axes[1, curCol].set_yticks([], [])
+
         axes[2,curCol].imshow(fossil_ica[:, :, 1],cmap="summer")
+        axes[2, curCol].set_xticks([], [])
+        axes[2, curCol].set_yticks([], [])
+
         axes[3,curCol].imshow(fossil_nmf[:, :, 1],cmap="summer")
+        axes[3, curCol].set_xticks([], [])
+        axes[3, curCol].set_yticks([], [])
 
         curCol +=1
 
@@ -196,16 +207,16 @@ def eval_chart(vectors,using_shape, featureCounts):
         ax.set_title(col)
 
     for ax, row in zip(axes[:, 0], ['Real Fossil', 'PCA', 'ICA', 'NMF']):
-        ax.set_ylabel(row, rotation=25, size="medium")
+        ax.set_ylabel(row, labelpad =  35,rotation=25, size="medium")
     project_figure.tight_layout()
 
-    plt.xticks([])
-    plt.yticks([])
-    plt.show()
+
+    plt.savefig("Feature_Reconstruction_Chart.png")
 
 
 v, us =  read_images(50)
 eval_chart(v,us,[2,5,10,15,20,25])
+#eval_chart(v,us,[2,5])
 #eval_PCA(v,us,[2,5,10,15,20,25,30,35,40])
 #eval_NMF(v,us,[2,5,10,15,20,25,30,35,40])
 #eval_ICA(v,us,[2,5,10,15,20,25,30,35,40])
