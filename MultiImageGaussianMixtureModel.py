@@ -5,6 +5,7 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.colors
+import re
 
 #Gaussian Mixture Model with tied covariance matrices
 rows = []
@@ -12,9 +13,9 @@ cols = []
 filenames = []
 data_list = []
 limit = 100
-num_iterations = 10
+num_iterations = 30
 
-for filename in Path('Fossil Data Sets/MTN-1 squares-JPG').rglob('*.jpg'):
+for filename in Path('Fossil Data Sets/MTN-2 squares-JPG').rglob('*.jpg'):
     img = Image.open(filename)
     pix = np.array(img)
     filenames.append(str(filename))
@@ -22,7 +23,7 @@ for filename in Path('Fossil Data Sets/MTN-1 squares-JPG').rglob('*.jpg'):
     cols.append(pix.shape[1])
     data_list.append(pix.reshape((-1, 3)) / 255)
     limit -= 1
-    if limit <= 0:
+    if limit == 0:
         break
 
 data = np.vstack(np.array(data_list))
@@ -91,14 +92,16 @@ for iteration in range(num_iterations):
     covariance = np.sum(np.array(cov_list), axis=0)
 
 #Separate image file saving
-# start = 0
-# for image in range(len(filenames)):
-#     end = start + rows[image] * cols[image]
-#     for cluster in range(num_clusters):
-#         plt.imshow(posterior_probs[cluster][start : end].reshape(rows[image], cols[image]))
-#         #plt.show()
-#         plt.savefig('Output/' + filenames[image].replace('.jpg', f"_{cluster}.jpg"), dpi=200)
-#     start += rows[image] * cols[image]
+start = 0
+for image in range(len(filenames)):
+    end = start + rows[image] * cols[image]
+    for cluster in range(num_clusters):
+        plt.imshow(posterior_probs[cluster][start : end].copy().reshape(rows[image], cols[image]), vmin=0, vmax=1)
+        plt.title(f"Class {cluster + 1}")
+        plt.colorbar()
+        plt.savefig('Output/' + filenames[image].replace('.jpg', f"_{cluster + 1}.jpg"), dpi=600)
+        plt.clf()
+    start += rows[image] * cols[image]
 
 #Colormap builder code from https://stackoverflow.com/questions/55501860/how-to-put-multiple-colormap-patches-in-a-matplotlib-legend
 from matplotlib.legend_handler import HandlerBase
@@ -126,9 +129,10 @@ for image in range(len(filenames)):
     end = start + rows[image] * cols[image]
     image_data = np.empty((num_clusters, rows[image] * cols[image], 3))
     for cluster in range(num_clusters):
-        tmp_r = np.multiply(my_colors[cluster][0], posterior_probs[cluster][start: end])
-        tmp_g = np.multiply(my_colors[cluster][1], posterior_probs[cluster][start: end])
-        tmp_b = np.multiply(my_colors[cluster][2], posterior_probs[cluster][start: end])
+        tmp_prob = posterior_probs[cluster][start:end].copy()
+        tmp_r = np.multiply(my_colors[cluster][0], tmp_prob)
+        tmp_g = np.multiply(my_colors[cluster][1], tmp_prob)
+        tmp_b = np.multiply(my_colors[cluster][2], tmp_prob)
         image_data[cluster] = np.dstack((tmp_r, tmp_g, tmp_b))
     combined_data = np.mean(image_data, axis=2)
     max_cluster = np.argmax(combined_data, axis=0)
@@ -149,7 +153,8 @@ for image in range(len(filenames)):
     handler_map = dict(zip(cmap_handles,
                            [HandlerColormap(cm, num_stripes=128) for cm in cmaps]))
     plt.legend(handles=cmap_handles, labels=cmap_labels, handler_map=handler_map)
-    #plt.show()
+    plt.title(re.sub(r'.+\\(.+).jpg', r'\1', filenames[image]))
     plt.savefig('Output/' + filenames[image].replace('.jpg', f"_combined.jpg"), dpi=600)
+    plt.clf()
     start += rows[image] * cols[image]
 
