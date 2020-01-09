@@ -150,10 +150,13 @@ for image in range(len(filenames)):
              matplotlib.colors.LinearSegmentedColormap.from_list("", [my_colors[4] * 0.1, my_colors[4]])]
     cmap_labels = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5"]
     cmap_handles = [mpatches.Rectangle((0, 0), 1, 1) for _ in cmaps]
+    ax = plt.gca()
     handler_map = dict(zip(cmap_handles,
                            [HandlerColormap(cm, num_stripes=128) for cm in cmaps]))
-    plt.legend(handles=cmap_handles, labels=cmap_labels, handler_map=handler_map)
+    leg = plt.legend(handles=cmap_handles, labels=cmap_labels, handler_map=handler_map, bbox_to_anchor=(1.3, 1),
+                     bbox_transform=ax.transAxes)
     plt.title(re.sub(r'.+\\(.+).jpg', r'\1', filenames[image]))
+
     plt.savefig('Output/' + filenames[image].replace('.jpg', f"_combined.jpg"), dpi=600)
     plt.clf()
     start += rows[image] * cols[image]
