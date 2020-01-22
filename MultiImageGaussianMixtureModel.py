@@ -12,10 +12,10 @@ rows = []
 cols = []
 filenames = []
 data_list = []
-limit = 100
+limit = -1
 num_iterations = 30
 
-for filename in Path('Fossil Data Sets/MTN-2 squares-JPG').rglob('*.jpg'):
+for filename in Path('Fossil Data Sets').rglob('*.jpg'):
     img = Image.open(filename)
     pix = np.array(img)
     filenames.append(str(filename))
@@ -65,9 +65,6 @@ for iteration in range(num_iterations):
         print("Delta = ", delta)
         if delta < 0.01:
             break
-
-    if iteration == num_iterations - 1:
-        break
 
     # M-step: Recalculate the mean/covariance for each class given the
     # current pixel probabilities for that class
@@ -161,3 +158,6 @@ for image in range(len(filenames)):
     plt.clf()
     start += rows[image] * cols[image]
 
+np.save("export_means.npy", means)
+np.save("export_prior.npy", prior)
+np.save("export_covariance.npy", covariance)
